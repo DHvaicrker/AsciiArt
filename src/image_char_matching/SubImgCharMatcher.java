@@ -7,8 +7,7 @@ public class SubImgCharMatcher {
     // need to specific behavior that the Char will be sorted by brightness
     // and char with the same brightness would be sorted by their Ascii values
     private final TreeMap<Double, TreeSet<Character>> normalizedBrightnessMap; // Maps normalized brightness to a set of characters.
-    // programing to an interface not implementation
-    private final Map<Character, Double> rawCharBrightnessMap; // Maps characters to their raw brightness values (before normalization).
+    private final HashMap<Character, Double> rawCharBrightnessMap; // Maps characters to their raw brightness values (before normalization).
 
     public SubImgCharMatcher(char[] charset) {
         this.normalizedBrightnessMap = new TreeMap<>();
@@ -21,8 +20,8 @@ public class SubImgCharMatcher {
 
     public char getCharByImageBrightness(double brightness) {
         // Find the closest normalized brightness value using TreeMap.
-        Map.Entry<Double, TreeSet<Character>> floorEntry = normalizedBrightnessMap.floorEntry(brightness);
-        Map.Entry<Double, TreeSet<Character>> ceilingEntry = normalizedBrightnessMap.ceilingEntry(brightness);
+        HashMap.Entry<Double, TreeSet<Character>> floorEntry = normalizedBrightnessMap.floorEntry(brightness);
+        HashMap.Entry<Double, TreeSet<Character>> ceilingEntry = normalizedBrightnessMap.ceilingEntry(brightness);
 
         if (floorEntry == null) return ceilingEntry.getValue().first(); // No smaller value, return the smallest ASCII character in the ceiling set.
         if (ceilingEntry == null) return floorEntry.getValue().first(); // No larger value, return the smallest ASCII character in the floor set.
@@ -76,7 +75,7 @@ public class SubImgCharMatcher {
         double minBrightness = Collections.min(rawCharBrightnessMap.values());
         double maxBrightness = Collections.max(rawCharBrightnessMap.values());
 
-        for (Map.Entry<Character, Double> entry : rawCharBrightnessMap.entrySet()) {
+        for (HashMap.Entry<Character, Double> entry : rawCharBrightnessMap.entrySet()) {
             // Calculate the normalizedBrightness by the Linear Stretch Formula:
             double normalizedBrightness = (entry.getValue() - minBrightness) / (maxBrightness - minBrightness);
 
