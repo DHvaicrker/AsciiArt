@@ -11,7 +11,6 @@ public class AsciiArtAlgorithm {
 
     private final int resolution;
     private final int numOfVerticalSubImages;
-    private final ImageManager imageManager;
     private final SubImgCharMatcher imageMatcher;
     // represents the brightness of each subImage.
     private double[][] brightnessGrid;
@@ -20,20 +19,21 @@ public class AsciiArtAlgorithm {
     public AsciiArtAlgorithm(Image image, int resolution,
                              SubImgCharMatcher imageMatcher) {
         this.resolution = resolution;
-        this.imageManager = new ImageManager();
         this.imageMatcher = imageMatcher;
         numOfVerticalSubImages =
-                imageManager.countVertiaclSubImages(image, resolution);
+                ImageManager.countVertiaclSubImages(image, resolution);
         initialSetup(image, resolution);
     }
 
     private void initialSetup(Image image, int resolution) {
-        Image[][] subImages = imageManager.divideToSubImages(image, resolution);
+        Image[][] subImages = ImageManager.divideToSubImages(image,
+                resolution);
         // subImages - and their brightnesses don't change throughout class lifetime
         brightnessGrid = new double[numOfVerticalSubImages][resolution];
         for (int i = 0; i < numOfVerticalSubImages; i++) {
             for (int j = 0; j < resolution; j++) {
-                brightnessGrid[i][j] = imageManager.getImageBrightness(subImages[i][j]);
+                brightnessGrid[i][j] =
+                        ImageManager.getImageBrightness(subImages[i][j]);
             }
         }
     }
