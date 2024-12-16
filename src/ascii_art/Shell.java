@@ -1,14 +1,21 @@
 package ascii_art;
 
+import java.io.IOException;
+import java.nio.file.LinkOption;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.Arrays;
+
+import image.Image;
+import image_char_matching.SubImgCharMatcher;
+
 
 public class Shell {
 
     // constants
     private static final int IMAGE_PATH_INDEX = 0;
     private static final int COMMAND_IDX = 0;
+    private static final int ARG1_IDX = 1;
     private static final String COMMAND_PREFIX = ">>> ";
     private static final String SPACE_REGEX = "\\s+";
 
@@ -20,26 +27,42 @@ public class Shell {
     private static final String CHANGE_OUTPUT_COMMAND = "output";
     private static final String ROUND_METHOD_COMMAND = "round";
     private static final String RUN_ALGORITHM_COMMAND = "asciiArt";
-    private static final List<Character> DEFAULT_CHAR_SET = Arrays.asList('1',
-            '2', '3', '4', '5', '6', '7', '8', '9', '0');
+    private static final char[] DEFAULT_CHAR_SET = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
     private static final int DEFAULT_RES = 2;
     private static final String ABS_ROUND_METHOD = "abs";
 
     // attributes
-    private TreeSet<Character> charSet = new TreeSet<>(DEFAULT_CHAR_SET);
-    private int resultion = DEFAULT_RES;
+    private int resolution = DEFAULT_RES;
     private String round_method = ABS_ROUND_METHOD;
 
+    private final SubImgCharMatcher subImgCharMatcher;
+    private AsciiArtAlgorithm asciiArtAlgorithm;
+
     public Shell() {
+        subImgCharMatcher = new SubImgCharMatcher(DEFAULT_CHAR_SET);
+    }
+
+    private void imageHandling(String imagePath) throws IOException {
+        Image image = new Image(imagePath);
+        asciiArtAlgorithm = new AsciiArtAlgorithm(image, DEFAULT_RES,
+                subImgCharMatcher);
     }
 
     public void run(String name) {
         // namefile handling
+        try {
+            imageHandling(name);
+        } catch (IOException e) {
+            System.out.println("yo");
+            return;
+        }
 
         // while not exit, keep running
         while (true) {
             System.out.print(COMMAND_PREFIX);
-            String command = KeyboardInput.readLine().split(SPACE_REGEX)[COMMAND_IDX];
+            String[] userInput = KeyboardInput.readLine().split(SPACE_REGEX);
+            String command = userInput[COMMAND_IDX];
+            String arg1 = userInput[ARG1_IDX];
             System.out.println(command);
             switch (command) {
                 case EXIT_PROGRAM_COMMAND:
@@ -55,6 +78,7 @@ public class Shell {
                     System.out.println("REMOVE_CHAR_COMMAND");
                     break;
                 case CHANGE_RES_COMMAND:
+                    changeResolution(arg1);
                     System.out.println("CHANGE_RES_COMMAND");
                     break;
                 case CHANGE_OUTPUT_COMMAND:
@@ -72,6 +96,15 @@ public class Shell {
             }
         }
 
+    }
+
+    private void changeResolution(String changeFactor) {
+        if (changeFactor.equals("up")) {
+            resolution *= 2;
+        } else if (changeFactor.equals("down")) {
+            resolution /= 2;
+        }
+        System.out.printf("Resolution set to %d.\n", resolution);
     }
 
     public static void main(String[] args) {
