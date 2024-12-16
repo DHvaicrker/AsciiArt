@@ -14,7 +14,7 @@ public class ImageManager {
      * @param image the original image to be padded
      * @return a new Image object with padding added, or the original image if no padding is needed
      */
-    public Image imagePadding(Image image) {
+    public static Image imagePadding(Image image) {
 
         int oldHeight = image.getHeight();
         int oldWidth = image.getWidth();
@@ -54,62 +54,51 @@ public class ImageManager {
 
 
     // finding the Closest bigger power of two given an Integer
-    private int findClosestPowerOfTwo(int num) {
+    private static int findClosestPowerOfTwo(int num) {
         int highestOneBit = Integer.highestOneBit(num);
         return (num == highestOneBit) ? num : highestOneBit << 1;
     }
 
+    public static int countVertiaclSubImages(Image image, int resolution) {
+        int subImageSize = getSubImageSize(image, resolution);
+        return image.getHeight() / subImageSize;
+    }
 
-    /**
-     * Divides the given image into a grid of sub-images.
-     *
-     * @param image  the original image to be divided
-     * @param height the number of sub-images along the vertical axis
-     * @param width  the number of sub-images along the horizontal axis
-     * @return a 2D array of sub-images
-     */
-    public Image[][] divideToSubImages(Image image, int height, int width) {
+    private static int getSubImageSize(Image image, int resolution) {
+        return image.getWidth() / resolution;
+    }
 
-        Image[][] subImagesGrid = new Image[height][width];
+    public static Image[][] divideToSubImages(Image image, int resolution) {
 
-        // Calculating the subImage dimensions
-        int subImageWidth = image.getWidth() / width;
-        int subImageHeight = image.getHeight() / height;
+        // calculating number of subImages in column.
+        int subImagesInCol = countVertiaclSubImages(image, resolution);
+        Image[][] subImagesGrid = new Image[subImagesInCol][resolution];
 
+        int subImageSize = getSubImageSize(image, resolution);
         // division into sub-images
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                subImagesGrid[i][j] = CreateSubImage(image, i * subImageHeight, j * subImageWidth, subImageHeight, subImageWidth);
+        for (int i = 0; i < subImagesInCol; i++) {
+            for (int j = 0; j < resolution; j++) {
+                subImagesGrid[i][j] = createSubImage(image,
+                        i * subImageSize, j * subImageSize, subImageSize);
             }
         }
         return subImagesGrid;
     }
 
 
-    /**
-     * Creates one sub-image from the given image.
-     *
-     * @param image          the original image
-     * @param startRowIdx    the starting row index for the sub-image
-     * @param startColIdx    the starting column index for the sub-image
-     * @param subImageHeight the height of the sub-image
-     * @param subImageWidth  the width of the sub-image
-     * @return a new Image object representing the sub-image
-     */
-    private Image CreateSubImage(Image image, int startRowIdx,
-                                 int startColIdx, int subImageHeight,
-                                 int subImageWidth) {
+    private static Image createSubImage(Image image, int startRowIdx,
+                                 int startColIdx, int subImageSize) {
 
-        Color[][] newSubImage = new Color[subImageHeight][subImageWidth];
+        Color[][] newSubImage = new Color[subImageSize][subImageSize];
 
         // coping the SubImage part from the source image
-        for (int i = 0; i < subImageHeight; i++) {
-            for (int j = 0; j < subImageWidth; j++) {
+        for (int i = 0; i < subImageSize; i++) {
+            for (int j = 0; j < subImageSize; j++) {
                 newSubImage[i][j] = image.getPixel(startRowIdx + i,
                         startColIdx + j);
             }
         }
-        return new Image(newSubImage, subImageWidth, subImageHeight);
+        return new Image(newSubImage, subImageSize, subImageSize);
     }
 
     /**
@@ -118,7 +107,7 @@ public class ImageManager {
      * @param image the image whose brightness is to be calculated
      * @return the brightness of the image as a value between 0 and 1
      */
-    public double getImageBrightness(Image image) {
+    public static double getImageBrightness(Image image) {
         int pixelSumValue = 0;
         int pixelCount = 0;
         for (int i = 0; i < image.getHeight(); i++) {
@@ -137,7 +126,7 @@ public class ImageManager {
      * @param color the color to be converted to greyscale
      * @return the greyscale value of the color
      */
-    private int greyscalePixel(Color color) {
+    private static int greyscalePixel(Color color) {
         return (int) (color.getRed() * RED_FACTOR + color.getGreen() * GREEN_FACTOR + color.getBlue() * BLUE_FACTOR);
     }
 }
