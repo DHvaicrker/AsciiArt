@@ -7,6 +7,7 @@ import java.util.TreeSet;
 import java.util.Arrays;
 
 import image.Image;
+import image.ImageManager;
 import image_char_matching.SubImgCharMatcher;
 
 
@@ -37,13 +38,16 @@ public class Shell {
 
     private final SubImgCharMatcher subImgCharMatcher;
     private AsciiArtAlgorithm asciiArtAlgorithm;
+    // Image is padded from the beginning.
+    private Image image;
 
     public Shell() {
         subImgCharMatcher = new SubImgCharMatcher(DEFAULT_CHAR_SET);
     }
 
     private void imageHandling(String imagePath) throws IOException {
-        Image image = new Image(imagePath);
+        image = new Image(imagePath);
+        image = ImageManager.imagePadding(image);
         asciiArtAlgorithm = new AsciiArtAlgorithm(image, DEFAULT_RES,
                 subImgCharMatcher);
     }
@@ -62,7 +66,6 @@ public class Shell {
             System.out.print(COMMAND_PREFIX);
             String[] userInput = KeyboardInput.readLine().split(SPACE_REGEX);
             String command = userInput[COMMAND_IDX];
-            String arg1 = userInput[ARG1_IDX];
             System.out.println(command);
             switch (command) {
                 case EXIT_PROGRAM_COMMAND:
@@ -78,7 +81,11 @@ public class Shell {
                     System.out.println("REMOVE_CHAR_COMMAND");
                     break;
                 case CHANGE_RES_COMMAND:
-                    changeResolution(arg1);
+                    if (userInput.length == 1) {
+                        System.out.printf("Resolution set to %d.\n", resolution);
+                    } else {
+                        changeResolution(userInput[ARG1_IDX]);
+                    }
                     System.out.println("CHANGE_RES_COMMAND");
                     break;
                 case CHANGE_OUTPUT_COMMAND:
@@ -99,12 +106,33 @@ public class Shell {
     }
 
     private void changeResolution(String changeFactor) {
+        // increase resolution
         if (changeFactor.equals("up")) {
+            // check if resolution can be increased
+            if (resolution * 2 > image.getHeight() || resolution * 2 > image.getWidth()) {
+                System.out.println("Did not change resolution due to exceeding boundaries.");
+                return;
+            }
             resolution *= 2;
+            // decrease resolution
         } else if (changeFactor.equals("down")) {
+            // check if resolution can be decreased
+            if (resolution / 2 < minCharsInRow()) {
+                System.out.println("Did not change resolution due to exceeding boundaries.");
+                return;
+            }
             resolution /= 2;
+        } else {
+            System.out.println("Did not change resolution due to incorrect format.");
+            return;
         }
+        asciiArtAlgorithm = new AsciiArtAlgorithm(image, resolution,
+                subImgCharMatcher);
         System.out.printf("Resolution set to %d.\n", resolution);
+    }
+
+    private int minCharsInRow() {
+        return Math.max(image.getWidth() / image.getHeight(), 1);
     }
 
     public static void main(String[] args) {

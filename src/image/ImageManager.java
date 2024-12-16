@@ -14,7 +14,7 @@ public class ImageManager {
      * @param image the original image to be padded
      * @return a new Image object with padding added, or the original image if no padding is needed
      */
-    public Image imagePadding(Image image) {
+    public static Image imagePadding(Image image) {
 
         int oldHeight = image.getHeight();
         int oldWidth = image.getWidth();
@@ -54,21 +54,21 @@ public class ImageManager {
 
 
     // finding the Closest bigger power of two given an Integer
-    private int findClosestPowerOfTwo(int num) {
+    private static int findClosestPowerOfTwo(int num) {
         int highestOneBit = Integer.highestOneBit(num);
         return (num == highestOneBit) ? num : highestOneBit << 1;
     }
 
-    public int countVertiaclSubImages(Image image, int resolution) {
+    public static int countVertiaclSubImages(Image image, int resolution) {
         int subImageSize = getSubImageSize(image, resolution);
         return image.getHeight() / subImageSize;
     }
 
-    private int getSubImageSize(Image image, int resolution) {
+    private static int getSubImageSize(Image image, int resolution) {
         return image.getWidth() / resolution;
     }
 
-    public Image[][] divideToSubImages(Image image, int resolution) {
+    public static Image[][] divideToSubImages(Image image, int resolution) {
 
         // calculating number of subImages in column.
         int subImagesInCol = countVertiaclSubImages(image, resolution);
@@ -86,7 +86,7 @@ public class ImageManager {
     }
 
 
-    private Image createSubImage(Image image, int startRowIdx,
+    private static Image createSubImage(Image image, int startRowIdx,
                                  int startColIdx, int subImageSize) {
 
         Color[][] newSubImage = new Color[subImageSize][subImageSize];
@@ -107,7 +107,7 @@ public class ImageManager {
      * @param image the image whose brightness is to be calculated
      * @return the brightness of the image as a value between 0 and 1
      */
-    public double getImageBrightness(Image image) {
+    public static double getImageBrightness(Image image) {
         int pixelSumValue = 0;
         int pixelCount = 0;
         for (int i = 0; i < image.getHeight(); i++) {
@@ -126,7 +126,7 @@ public class ImageManager {
      * @param color the color to be converted to greyscale
      * @return the greyscale value of the color
      */
-    private int greyscalePixel(Color color) {
+    private static int greyscalePixel(Color color) {
         return (int) (color.getRed() * RED_FACTOR + color.getGreen() * GREEN_FACTOR + color.getBlue() * BLUE_FACTOR);
     }
 }
