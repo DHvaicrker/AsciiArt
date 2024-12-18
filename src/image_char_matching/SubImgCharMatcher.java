@@ -12,11 +12,35 @@ public class SubImgCharMatcher {
 
     // Maps normalized brightness to a set of characters.
     // The characters in the set are sorted by their ASCII values.
-    private final TreeMap<Double, TreeSet<Character>> normalizedBrightnessMap;
+    private final TreeMap<Double, Character> normalizedBrightnessMap;
 
     // Maps characters to their raw brightness values (before normalization).
     private final HashMap<Character, Double> rawCharBrightnessMap;
-
+    public static final int ROUND_METHOD_FLOOR = -1;
+    public static final int ROUND_METHOD_CEIL = 1;
+    public static final int ROUND_METHOD_ABS = 0;
+    private int roundMethod = 0;
+    public void setRoundMethod(String roundMethod) throws IllegalArgumentException {
+        if (roundMethod.equals("up")) {
+            this.roundMethod = ROUND_METHOD_FLOOR;
+        } else if (roundMethod.equals("down")) {
+            this.roundMethod = ROUND_METHOD_CEIL;
+        } else if (roundMethod.equals("abs")) {
+            this.roundMethod = ROUND_METHOD_ABS;
+        }
+       throw new IllegalArgumentException("Did not change rounding method due to incorrect format");
+    }
+    /**
+     * Returns the character set used for matching.
+     *
+     * @return the character set used for matching
+     */
+    public TreeSet<Character> getCharSet() {
+        return new TreeSet<>(rawCharBrightnessMap.keySet());
+    }
+    public boolean containsChar(char c) {
+        return rawCharBrightnessMap.containsKey(c);
+    }
     /**
      * Constructs a SubImgCharMatcher with the given character set.
      * Initializes the brightness mappings for the characters.
@@ -32,6 +56,7 @@ public class SubImgCharMatcher {
         normalizeBrightness();
     }
 
+
     /**
      * Finds the character that best matches the given brightness level.
      * The closest brightness value is determined using the TreeMap.
@@ -39,23 +64,38 @@ public class SubImgCharMatcher {
      * @param brightness the brightness level to match
      * @return the character that best matches the given brightness level
      */
-    public char getCharByImageBrightness(double brightness) {
-        // Find the closest normalized brightness value using TreeMap.
-        Map.Entry<Double, TreeSet<Character>> floorEntry = normalizedBrightnessMap.floorEntry(brightness);
-        Map.Entry<Double, TreeSet<Character>> ceilingEntry = normalizedBrightnessMap.ceilingEntry(brightness);
+    public char getCharByImageBrightness(double brightness) throws IllegalArgumentException {
 
-        if (floorEntry == null) return ceilingEntry.getValue().first(); // No smaller value, return the smallest ASCII character in the ceiling set.
-        if (ceilingEntry == null) return floorEntry.getValue().first(); // No larger value, return the smallest ASCII character in the floor set.
+        if (roundMethod == ROUND_METHOD_FLOOR) {
+            Map.Entry<Double, Character> floorEntry = normalizedBrightnessMap.floorEntry(brightness);
+            if (floorEntry == null) {
+                throw new IllegalArgumentException("No character found for the given brightness level when round method is floor.");
+            }
+            return floorEntry.getValue();
+        } else if (roundMethod == ROUND_METHOD_CEIL) {
+            Map.Entry<Double, Character> ceilingEntry = normalizedBrightnessMap.ceilingEntry(brightness);
+            if (ceilingEntry == null) {
+                throw new IllegalArgumentException("No character found for the given brightness level when round method is floor.");
+            }
+            return ceilingEntry.getValue();
+        }
+        Map.Entry<Double, Character> floorEntry = normalizedBrightnessMap.floorEntry(brightness);
+        Map.Entry<Double, Character> ceilingEntry = normalizedBrightnessMap.ceilingEntry(brightness);
 
-        // Compare which is closer to the target brightness.
+        if (floorEntry == null) return ceilingEntry.getValue();
+        if (ceilingEntry == null) return floorEntry.getValue();
+
         double floorDiff = Math.abs(floorEntry.getKey() - brightness);
         double ceilingDiff = Math.abs(ceilingEntry.getKey() - brightness);
 
-        // Get the char with the closest brightness and with the lowest ASCII value.
-        if (floorDiff < ceilingDiff || (floorDiff == ceilingDiff && floorEntry.getValue().first() < ceilingEntry.getValue().first())) {
-            return floorEntry.getValue().first();
-        } else {
-            return ceilingEntry.getValue().first();
+        if (floorDiff < ceilingDiff) {
+            return floorEntry.getValue();
+        } else if (ceilingDiff < floorDiff) {
+            return ceilingEntry.getValue();
+        } else { // Tie-breaking: return the smallest ASCII character.
+            return (floorEntry.getValue() < ceilingEntry.getValue())
+                    ? floorEntry.getValue()
+                    : ceilingEntry.getValue();
         }
     }
 
@@ -103,6 +143,7 @@ public class SubImgCharMatcher {
             }
         }
 
+
         return (double) trueCount / TOTAL_PIXELS;
     }
 
@@ -120,12 +161,16 @@ public class SubImgCharMatcher {
             // Calculate the normalized brightness using the linear stretch formula.
             double normalizedBrightness = (entry.getValue() - minBrightness) / (maxBrightness - minBrightness);
 
-            // Add the character to the corresponding TreeSet in the map.
-            normalizedBrightnessMap.putIfAbsent(normalizedBrightness, new TreeSet<>());
-            // Get the tree that represents the brightness - normalizedBrightness.
-            TreeSet<Character> brightnessTree = normalizedBrightnessMap.get(normalizedBrightness);
-            // Add the character to the tree such that it will automatically be ordered by ASCII values.
-            brightnessTree.add(entry.getKey());
+            // If the brightness value already exists, store the character with the lower ASCII value.
+            if (normalizedBrightnessMap.containsKey(normalizedBrightness)) {
+                char existingChar = normalizedBrightnessMap.get(normalizedBrightness);
+                if (entry.getKey() < existingChar) {
+                    normalizedBrightnessMap.put(normalizedBrightness, entry.getKey());
+                }
+            } else {
+                normalizedBrightnessMap.put(normalizedBrightness, entry.getKey());
+            }
         }
     }
+
 }

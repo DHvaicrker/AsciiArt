@@ -4,6 +4,12 @@ import image.Image;
 import image.ImageManager;
 import image_char_matching.SubImgCharMatcher;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The AsciiArtAlgorithm class converts an image to ASCII art.
  */
@@ -11,17 +17,17 @@ public class AsciiArtAlgorithm {
 
     private final int resolution;
     private final int numOfVerticalSubImages;
-    private final SubImgCharMatcher imageMatcher;
+    private final SubImgCharMatcher subImageCharMatcher;
     // represents the brightness of each subImage.
     private double[][] brightnessGrid;
 
 
     public AsciiArtAlgorithm(Image image, int resolution,
-                             SubImgCharMatcher imageMatcher) {
+                             SubImgCharMatcher subImageCharMatcher) {
         this.resolution = resolution;
-        this.imageMatcher = imageMatcher;
+        this.subImageCharMatcher = subImageCharMatcher;
         numOfVerticalSubImages =
-                ImageManager.countVertiaclSubImages(image, resolution);
+                ImageManager.countVerticalSubImages(image, resolution);
         initialSetup(image, resolution);
     }
 
@@ -47,7 +53,9 @@ public class AsciiArtAlgorithm {
         char[][] resultAsciiImage = new char[numOfVerticalSubImages][resolution];
         for (int i = 0; i < numOfVerticalSubImages; i++) {
             for (int j = 0; j < resolution; j++) {
-                resultAsciiImage[i][j] = imageMatcher.getCharByImageBrightness(brightnessGrid[i][j]);
+
+                resultAsciiImage[i][j] = subImageCharMatcher.getCharByImageBrightness(brightnessGrid[i][j]);
+
             }
         }
         return resultAsciiImage;
