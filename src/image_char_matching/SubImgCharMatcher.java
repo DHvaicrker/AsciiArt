@@ -9,27 +9,41 @@ import java.util.*;
  */
 public class SubImgCharMatcher {
     private static final int TOTAL_PIXELS = 16 * 16;
+    public static final String CELLING_ROUND_KEYWORD = "up";
+    public static final String FLOOR_ROUNDING_KEYWORD = "down";
+    public static final String ABS_ROUNDING_KEYWORD = "abs";
+    public static final String ROUNDING_ERROR_MSG = "Did not change rounding method due to incorrect format";
+    public static final int MIN_NUM_OF_CHARS_TO_NORMELIZE = 2;
 
     // Maps normalized brightness to a set of characters.
-    // The characters in the set are sorted by their ASCII values.
+    // In the case of a tie, the character with the lower ASCII value is chosen.
     private final TreeMap<Double, Character> normalizedBrightnessMap;
 
     // Maps characters to their raw brightness values (before normalization).
     private final HashMap<Character, Double> rawCharBrightnessMap;
-    public static final int ROUND_METHOD_FLOOR = -1;
-    public static final int ROUND_METHOD_CEIL = 1;
-    public static final int ROUND_METHOD_ABS = 0;
+    private static final int ROUND_METHOD_FLOOR = -1;
+    private static final int ROUND_METHOD_CEIL = 1;
+    private static final int ROUND_METHOD_ABS = 0;
     private int roundMethod = 0;
+
+    /**
+     * Sets the rounding method for brightness matching.
+     *
+     * @param roundMethod the rounding method ("up", "down", or "abs")
+     * @throws IllegalArgumentException if the rounding method is invalid
+     */
     public void setRoundMethod(String roundMethod) throws IllegalArgumentException {
-        if (roundMethod.equals("up")) {
-            this.roundMethod = ROUND_METHOD_FLOOR;
-        } else if (roundMethod.equals("down")) {
+        if (roundMethod.equals(CELLING_ROUND_KEYWORD)) {
             this.roundMethod = ROUND_METHOD_CEIL;
-        } else if (roundMethod.equals("abs")) {
+        } else if (roundMethod.equals(FLOOR_ROUNDING_KEYWORD)) {
+            this.roundMethod = ROUND_METHOD_FLOOR;
+        } else if (roundMethod.equals(ABS_ROUNDING_KEYWORD)) {
             this.roundMethod = ROUND_METHOD_ABS;
+        } else {
+            throw new IllegalArgumentException(ROUNDING_ERROR_MSG);
         }
-       throw new IllegalArgumentException("Did not change rounding method due to incorrect format");
     }
+
     /**
      * Returns the character set used for matching.
      *
@@ -38,9 +52,17 @@ public class SubImgCharMatcher {
     public TreeSet<Character> getCharSet() {
         return new TreeSet<>(rawCharBrightnessMap.keySet());
     }
+
+    /**
+     * Checks if the character is already in the matcher.
+     *
+     * @param c the character to check
+     * @return true if the character is in the matcher, false otherwise
+     */
     public boolean containsChar(char c) {
         return rawCharBrightnessMap.containsKey(c);
     }
+
     /**
      * Constructs a SubImgCharMatcher with the given character set.
      * Initializes the brightness mappings for the characters.
@@ -56,26 +78,25 @@ public class SubImgCharMatcher {
         normalizeBrightness();
     }
 
-
     /**
      * Finds the character that best matches the given brightness level.
      * The closest brightness value is determined using the TreeMap.
      *
      * @param brightness the brightness level to match
      * @return the character that best matches the given brightness level
+     * @throws IllegalArgumentException if no character is found for the given brightness level
      */
     public char getCharByImageBrightness(double brightness) throws IllegalArgumentException {
-
         if (roundMethod == ROUND_METHOD_FLOOR) {
             Map.Entry<Double, Character> floorEntry = normalizedBrightnessMap.floorEntry(brightness);
             if (floorEntry == null) {
-                throw new IllegalArgumentException("No character found for the given brightness level when round method is floor.");
+                throw new IllegalArgumentException(ROUNDING_ERROR_MSG);
             }
             return floorEntry.getValue();
         } else if (roundMethod == ROUND_METHOD_CEIL) {
             Map.Entry<Double, Character> ceilingEntry = normalizedBrightnessMap.ceilingEntry(brightness);
             if (ceilingEntry == null) {
-                throw new IllegalArgumentException("No character found for the given brightness level when round method is floor.");
+                throw new IllegalArgumentException(ROUNDING_ERROR_MSG);
             }
             return ceilingEntry.getValue();
         }
@@ -120,13 +141,13 @@ public class SubImgCharMatcher {
     public void removeChar(char c) {
         if (rawCharBrightnessMap.containsKey(c)) {
             rawCharBrightnessMap.remove(c);
-            if (rawCharBrightnessMap.size() >= 2) {
+            if (rawCharBrightnessMap.size() >= MIN_NUM_OF_CHARS_TO_NORMELIZE) {
                 normalizeBrightness();
             }
         }
     }
 
-    /*
+    /**
      * Calculates the brightness of a given character.
      * The brightness is determined by the proportion of black pixels in the character's image.
      *
@@ -144,12 +165,10 @@ public class SubImgCharMatcher {
                 }
             }
         }
-
-
         return (double) trueCount / TOTAL_PIXELS;
     }
 
-    /*
+    /**
      * Normalizes the brightness values of the characters and updates the normalized brightness map.
      * The normalized brightness is calculated using a linear stretch formula.
      */
@@ -174,5 +193,4 @@ public class SubImgCharMatcher {
             }
         }
     }
-
 }

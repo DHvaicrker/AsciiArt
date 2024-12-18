@@ -1,0 +1,60 @@
+dvir_mateless,dvir.perahya
+325723559,329194757
+
+1. Classes explanation:
+
+# AsciiArtAlgorithm Class is responsible for handling the calculative aspects
+of the actual algorithm.
+Given Image, resolution and SubImageCharMatcher (Class) Object, it preforms
+the conversion of subImages into chars.
+- The composition of SubImageCharMatcher is necessary to keep track of the char
+set and it's changes and updates.
+
+# SubImageCharMatcher Class is responsible for handling the char set and
+i.e. the mapping of brightness to chars, and the changes in the char set.
+
+# ImageUtility Class is responsible for procedures acted on the image, such as
+padding, division into subImages and calculating the brightness of each
+subImage. It is a utility class, meaning it holds only static methods and is
+not meant to be instantiated.
+
+# Shell Class is responsible for the interaction with the user, using the facade
+pattern. It allows for abstraction of the algorithm and hides the complexity of
+it from the user. The Shell holds the AsciiArtAlgorithm object and the
+SubImageCharMatcher object with composition. is also holds the Image in order
+to change resolution and run the algorithm with the wanted user parameters
+changes.
+
+2. Explanation of the data structures used in the project:
+
+# The main data structure used in the project is the 2D array of chars, and 2D
+array of Images which represents the subImages grid and the final ascii art
+image, is is the most compatable for the job
+since the resolution of the image is known with every run of the algorithm.
+So the size of the array is known and can be allocated in advance.
+
+# The SubImageCharMatcher class uses hashMap to store the mapping of brightness
+to char before normalization, this is done to allow for easy access O(1).
+a TreeMap to store the brightness to char mapping after normalization, this is
+done to allow for easy access to the char that corresponds to a given
+brightness. But also to allow O(log n) search to find the closest brightness to
+a given value.
+
+3. Exception handling:
+- The project uses exceptions to handle errors caused by invalid input from the user.
+- It throws `IllegalArgumentException` and `InvalidCommandException` to handle errors
+caused by invalid input from the user.
+- `IllegalArgumentException` is used in the `SubImgCharMatcher` class
+ when no character is found for a given brightness level.
+- `InvalidCommandException` is used in the `Shell` class to handle invalid commands entered by the user.
+- These exceptions are caught in the `Shell` class, specifically in the `run` method,
+ where appropriate error messages are printed to inform the user of the issue.
+
+
+4. Changes made to SubImgCharMatcher class:
+- Added private rounding method and Added setter for it in the API to allow for
+ user change of rounding method.
+- Added getter method to the charSet to allow for user view of it.
+~ There was no way to change the rounding method without altering the API.
+
+
