@@ -31,7 +31,9 @@ public class Shell {
     private static final int DEFAULT_RES = 2;
     private static final String ABS_ROUND_METHOD = "abs";
     private static final String ROUND_ROUND_METHOD = "abs";
-    private static  boolean is_html_output = false; // the default is the console output
+    public static final String SPACE = "space";
+    public static final char SPACE_CHAR = ' ';
+    private static boolean is_html_output = false; // the default is the console output
 
     // attributes
     private int resolution = DEFAULT_RES;
@@ -63,65 +65,54 @@ public class Shell {
         asciiArtAlgorithm = new AsciiArtAlgorithm(image, DEFAULT_RES,
                 subImgCharMatcher);
     }
+
     private void showChars() {
         TreeSet<Character> charSet = subImgCharMatcher.getCharSet();
         for (Character c : charSet) {
             System.out.print(c + " ");
         }
+        System.out.println();
     }
 
-    private void addCharToCharSet(String strArg,boolean isDeleteMode) throws IllegalArgumentException {
-        if (strArg.matches(".-.") && strArg.length() == 3) {
+    private void modifyCharSet(String strArg, boolean isDeleteMode) throws IllegalArgumentException {
+        // add <char> command handling
+        if (strArg.length() == 1) {
+            char charToModify = strArg.charAt(0);
+            if (charToModify < 32 || charToModify > 126) {
+                throw new IllegalArgumentException("Did not add due to incorrect format.");
+            }
+            executeModificationCharSet(charToModify, isDeleteMode);
+            // Add range of Chars
+        } else if (strArg.matches(".-.") && strArg.length() == 3) {
             char firstChar = (char) Math.min((int) strArg.charAt(0), (int) strArg.charAt(2));
             char secondChar = (char) Math.max((int) strArg.charAt(0), (int) strArg.charAt(2));
             for (char c = firstChar; c <= secondChar; c++) {
-                if (!subImgCharMatcher.containsChar(c)) {
-                    if (isDeleteMode){
-                        subImgCharMatcher.removeChar(c);
-                    }
-                    else{
-                        subImgCharMatcher.addChar(c);
-                    }
-
-
-                }
-
+                executeModificationCharSet(c, isDeleteMode);
             }
-        } else if (strArg.length() == 1) { // add <char> command handling
-            char charToModify = strArg.charAt(0);
-            if (charToModify < 32 || charToModify > 126) {
-
-                throw new IllegalArgumentException("Did not add due to incorrect format.");
-            }
-            if (!subImgCharMatcher.containsChar(charToModify)) {
-                if (isDeleteMode){
-                    subImgCharMatcher.removeChar(charToModify);
-                }
-                else{
-                    subImgCharMatcher.addChar(charToModify);
-                }
-
-            }
-
+            // Add every char
         } else if (strArg.equals("all")) { // add all command handling
             for (int charToModify = 32; charToModify <= 126; charToModify++) {
-                if (!subImgCharMatcher.containsChar((char)charToModify)) {
-
-                    if (isDeleteMode){
-                        subImgCharMatcher.removeChar((char)charToModify);
-                    }
-                    else{
-                        subImgCharMatcher.addChar((char)charToModify);
-                    }
-
-                }
+                executeModificationCharSet((char) charToModify, isDeleteMode);
             }
+            // Add Space char
+        } else if (strArg.equals(SPACE)) {
+            executeModificationCharSet(SPACE_CHAR, isDeleteMode);
         } else {
-
             throw new IllegalArgumentException("Did not add due to incorrect format.");
         }
-
     }
+
+    private void executeModificationCharSet(char charToModify,
+                                            boolean isDeleteMode) {
+        if (isDeleteMode) {
+            subImgCharMatcher.removeChar(charToModify);
+        } else {
+            if (!subImgCharMatcher.containsChar(charToModify)) {
+                subImgCharMatcher.addChar(charToModify);
+            }
+        }
+    }
+
     public void run(String name) {
         // namefile handling
         try {
@@ -147,7 +138,7 @@ public class Shell {
                     break;
                 case ADD_CHAR_COMMAND:
                     try {
-                        addCharToCharSet(userInput[ARG1_IDX],false);
+                        modifyCharSet(userInput[ARG1_IDX], false);
                     } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
                     }
@@ -155,7 +146,7 @@ public class Shell {
                     break;
                 case REMOVE_CHAR_COMMAND:
                     try {
-                        addCharToCharSet(userInput[ARG1_IDX],true);
+                        modifyCharSet(userInput[ARG1_IDX], true);
                     } catch (IllegalArgumentException e) {
                         System.out.println(e.getMessage());
                     }
@@ -172,11 +163,12 @@ public class Shell {
                 case CHANGE_OUTPUT_COMMAND:
                     if (userInput.length == 1) {
                         System.out.println("Did not change output method due to incorrect format.");
-                    }
-                    try {
-                        changeOutput(userInput[ARG1_IDX]);
-                    } catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
+                    } else {
+                        try {
+                            changeOutput(userInput[ARG1_IDX]);
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
+                        }
                     }
                     System.out.println("CHANGE_OUTPUT_COMMAND");
                     break;
@@ -189,7 +181,11 @@ public class Shell {
                     System.out.println("ROUND_METHOD_COMMAND");
                     break;
                 case RUN_ALGORITHM_COMMAND:
-                    runAlgorithm();
+                    try {
+                        runAlgorithm();
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
                     System.out.println("RUN_ALGORITHM_COMMAND");
                     break;
                 default:
@@ -199,6 +195,7 @@ public class Shell {
         }
 
     }
+
     private void runAlgorithm() throws IllegalArgumentException {
         if (subImgCharMatcher.getCharSet().size() < 2) {
             throw new IllegalArgumentException("Did not execute. Charset is too small.");
@@ -213,6 +210,7 @@ public class Shell {
             output.out(result);
         }
     }
+
     private void changeResolution(String changeFactor) {
         // increase resolution
         if (changeFactor.equals("up")) {

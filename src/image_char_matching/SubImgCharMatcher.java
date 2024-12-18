@@ -120,7 +120,9 @@ public class SubImgCharMatcher {
     public void removeChar(char c) {
         if (rawCharBrightnessMap.containsKey(c)) {
             rawCharBrightnessMap.remove(c);
-            normalizeBrightness();
+            if (rawCharBrightnessMap.size() >= 2) {
+                normalizeBrightness();
+            }
         }
     }
 
