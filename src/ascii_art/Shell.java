@@ -13,7 +13,9 @@ import image_char_matching.SubImgCharMatcher;
  * The Shell class acts as the command-line interface for generating ASCII art.
  */
 public class Shell {
-    private static final String INCORRECT_RESOLUTION_FORMAT_ERROR_MSG = "Did not change resolution due to incorrect format.";
+    private static final String
+            INCORRECT_RESOLUTION_FORMAT_ERROR_MSG =
+            "Did not change resolution due to incorrect format.";
     // Constants
     private static final int IMAGE_PATH_INDEX = 0;
     private static final int COMMAND_IDX = 0;
@@ -33,7 +35,8 @@ public class Shell {
     private static final int DEFAULT_RES = 2;
     private static final String SPACE = "space";
     private static final char SPACE_CHAR = ' ';
-    private static final String OUTPUT_ERROR_MSG = "Did not change output method due to incorrect format.";
+    private static final String OUTPUT_ERROR_MSG =
+            "Did not change output method due to incorrect format.";
     private static final String SPACE_SPERATOR = " ";
     private static final int SMALLEST_ASCII_CHAR = 32;
     private static final int LARGEST_ASCII_CHAR = 126;
@@ -52,9 +55,12 @@ public class Shell {
     private static final String OUTPUT_FILE_FONT = "Courier New";
     private static final String INCREASE_RESOLUTION = "up";
     private static final String DECREASE_RESOLTUION = "down";
-    private static final String RESOLUTION_EXCEEDING_BOUNDARIES_ERROR_MSG = "Did not change resolution due to exceeding boundaries.";
+    private static final String
+            RESOLUTION_EXCEEDING_BOUNDARIES_ERROR_MSG =
+            "Did not change resolution due to exceeding boundaries.";
     private static final int MIN_CHARS_IN_ROW = 1;
-    private static final String ROUNDING_ERROR_MSG = "Did not change rounding method due to incorrect format.";
+    private static final String ROUNDING_ERROR_MSG =
+            "Did not change rounding method due to incorrect format.";
     private static final String REMOVE_ERROR_MSG = "Did not remove due to incorrect format.";
 
     // Attributes
@@ -117,7 +123,8 @@ public class Shell {
      * @param isDeleteMode true if removing characters, false if adding
      * @throws InvalidCommandException if the input format is invalid
      */
-    private void modifyCharSet(String strArg, boolean isDeleteMode) throws InvalidCommandException {
+    private void modifyCharSet
+    (String strArg, boolean isDeleteMode) throws InvalidCommandException {
         if (strArg.length() == 1) {
             char charToModify = strArg.charAt(FIRST_CHAR_INDEX);
             if (charToModify < SMALLEST_ASCII_CHAR || charToModify > LARGEST_ASCII_CHAR) {
@@ -125,13 +132,16 @@ public class Shell {
             }
             executeModificationCharSet(charToModify, isDeleteMode);
         } else if (strArg.matches(RANGE_REGEX) && strArg.length() == NUM_OF_CHAR_IN_RANGE) {
-            char firstChar = (char) Math.min(strArg.charAt(FIRST_CHAR_INDEX), strArg.charAt(SECOND_CHAR_INDEX));
-            char secondChar = (char) Math.max(strArg.charAt(FIRST_CHAR_INDEX), strArg.charAt(SECOND_CHAR_INDEX));
+            char firstChar =
+                    (char) Math.min(strArg.charAt(FIRST_CHAR_INDEX), strArg.charAt(SECOND_CHAR_INDEX));
+            char secondChar =
+                    (char) Math.max(strArg.charAt(FIRST_CHAR_INDEX), strArg.charAt(SECOND_CHAR_INDEX));
             for (char c = firstChar; c <= secondChar; c++) {
                 executeModificationCharSet(c, isDeleteMode);
             }
         } else if (strArg.equals(ADD_ALL_COMMAND)) {
-            for (int charToModify = SMALLEST_ASCII_CHAR; charToModify <= LARGEST_ASCII_CHAR; charToModify++) {
+            for (int charToModify =
+                 SMALLEST_ASCII_CHAR; charToModify <= LARGEST_ASCII_CHAR; charToModify++) {
                 executeModificationCharSet((char) charToModify, isDeleteMode);
             }
         } else if (strArg.equals(SPACE)) {

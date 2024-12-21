@@ -38,7 +38,9 @@ public class ImageUtility {
         Color[][] paddedImage = new Color[newHeight][newWidth];
         for (int i = 0; i < newHeight; i++) {
             for (int j = 0; j < newWidth; j++) {
-                if (i < verticalPadding || i >= verticalPadding + oldHeight || j < horizontalPadding || j >= horizontalPadding + oldWidth) {
+                if (i < verticalPadding ||
+                        i >= verticalPadding + oldHeight ||
+                        j < horizontalPadding || j >= horizontalPadding + oldWidth) {
                     paddedImage[i][j] = WHITE_COLOR;
                 } else {
                     paddedImage[i][j] = image.getPixel(i - verticalPadding, j - horizontalPadding);
@@ -79,7 +81,8 @@ public class ImageUtility {
      * @param resolution the resolution for dividing the image into sub-images
      * @return the size of each sub-image
      */
-    private static int getSubImageSize(Image image, int resolution) {
+    private static int getSubImageSize
+    (Image image, int resolution) {
         return image.getWidth() / resolution;
     }
 
@@ -97,7 +100,9 @@ public class ImageUtility {
         int subImageSize = getSubImageSize(image, resolution);
         for (int i = 0; i < subImagesInCol; i++) {
             for (int j = 0; j < resolution; j++) {
-                subImagesGrid[i][j] = createSubImage(image, i * subImageSize, j * subImageSize, subImageSize);
+                subImagesGrid[i][j] =
+                        createSubImage(image, i * subImageSize,
+                                j * subImageSize, subImageSize);
             }
         }
         return subImagesGrid;
@@ -112,7 +117,8 @@ public class ImageUtility {
      * @param subImageSize the size of the sub-image
      * @return the created sub-image
      */
-    private static Image createSubImage(Image image, int startRowIdx, int startColIdx, int subImageSize) {
+    private static Image createSubImage
+    (Image image, int startRowIdx, int startColIdx, int subImageSize) {
         Color[][] newSubImage = new Color[subImageSize][subImageSize];
         for (int i = 0; i < subImageSize; i++) {
             for (int j = 0; j < subImageSize; j++) {
@@ -148,6 +154,8 @@ public class ImageUtility {
      * @return the greyscale value of the color
      */
     private static double greyscalePixel(Color color) {
-        return color.getRed() * RED_FACTOR + color.getGreen() * GREEN_FACTOR + color.getBlue() * BLUE_FACTOR;
+        return color.getRed() * RED_FACTOR
+                + color.getGreen() * GREEN_FACTOR
+                + color.getBlue() * BLUE_FACTOR;
     }
 }

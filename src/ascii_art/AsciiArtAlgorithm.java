@@ -61,7 +61,8 @@ public class AsciiArtAlgorithm {
         char[][] resultAsciiImage = new char[numOfVerticalSubImages][resolution];
         for (int i = 0; i < numOfVerticalSubImages; i++) {
             for (int j = 0; j < resolution; j++) {
-                resultAsciiImage[i][j] = subImageCharMatcher.getCharByImageBrightness(brightnessGrid[i][j]);
+                resultAsciiImage[i][j] =
+                        subImageCharMatcher.getCharByImageBrightness(brightnessGrid[i][j]);
             }
         }
         return resultAsciiImage;

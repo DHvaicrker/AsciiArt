@@ -12,7 +12,8 @@ public class SubImgCharMatcher {
     private static final String CELLING_ROUND_KEYWORD = "up";
     private static final String FLOOR_ROUNDING_KEYWORD = "down";
     private static final String ABS_ROUNDING_KEYWORD = "abs";
-    private static final String ROUNDING_ERROR_MSG = "Did not change rounding method due to incorrect format";
+    private static final String ROUNDING_ERROR_MSG =
+            "Did not change rounding method due to incorrect format";
     private static final int MIN_NUM_OF_CHARS_TO_NORMELIZE = 2;
 
     // Maps normalized brightness to a set of characters.
@@ -180,7 +181,8 @@ public class SubImgCharMatcher {
 
         for (Map.Entry<Character, Double> entry : rawCharBrightnessMap.entrySet()) {
             // Calculate the normalized brightness using the linear stretch formula.
-            double normalizedBrightness = (entry.getValue() - minBrightness) / (maxBrightness - minBrightness);
+            double normalizedBrightness =
+                    (entry.getValue() - minBrightness) / (maxBrightness - minBrightness);
 
             // If the brightness value already exists, store the character with the lower ASCII value.
             if (normalizedBrightnessMap.containsKey(normalizedBrightness)) {
