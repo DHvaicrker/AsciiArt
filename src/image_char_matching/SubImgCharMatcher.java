@@ -9,11 +9,11 @@ import java.util.*;
  */
 public class SubImgCharMatcher {
     private static final int TOTAL_PIXELS = 16 * 16;
-    public static final String CELLING_ROUND_KEYWORD = "up";
-    public static final String FLOOR_ROUNDING_KEYWORD = "down";
-    public static final String ABS_ROUNDING_KEYWORD = "abs";
-    public static final String ROUNDING_ERROR_MSG = "Did not change rounding method due to incorrect format";
-    public static final int MIN_NUM_OF_CHARS_TO_NORMELIZE = 2;
+    private static final String CELLING_ROUND_KEYWORD = "up";
+    private static final String FLOOR_ROUNDING_KEYWORD = "down";
+    private static final String ABS_ROUNDING_KEYWORD = "abs";
+    private static final String ROUNDING_ERROR_MSG = "Did not change rounding method due to incorrect format";
+    private static final int MIN_NUM_OF_CHARS_TO_NORMELIZE = 2;
 
     // Maps normalized brightness to a set of characters.
     // In the case of a tie, the character with the lower ASCII value is chosen.
