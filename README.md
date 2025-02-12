@@ -4,8 +4,7 @@
 
 ## Overview 🚀
 
-This project showcases my proficiency in Java ☕ by creating a versatile ASCII art generator. ASCII art, a classic form of digital art, uses printable characters from the ASCII standard to construct visual representations. This project goes beyond simply displaying pre-made art; it demonstrates the ability to programmatically generate and manipulate these text-based images, highlighting my understanding of algorithms, string manipulation, and image processing.
-
+This project showcases my is a versatile ASCII art generator. ASCII art, a classic form of digital art, uses printable characters from the ASCII standard to construct visual representations. This project goes beyond simply displaying pre-made art; it demonstrates the ability to programmatically generate and manipulate these text-based images.
 ## Key Features & Capabilities ✨
 
 * **Diverse ASCII Art Generation:** Converts images into ASCII art by analyzing image brightness and mapping it to characters.
@@ -60,8 +59,7 @@ Converts characters to a binary "image" (2D array of booleans) to calculate thei
 This project demonstrates my ability to create a complex, interactive application in Java, showcasing skills in object-oriented programming, algorithm design, and image processing. The ASCII art generator is a fun and engaging way to highlight these technical skills.
 
 * **Language:** Java ☕
-* **Libraries/Frameworks (If applicable):** *(List any external libraries used, e.g., image processing libraries if you convert images to ASCII)*
-* **Core Algorithms:** *(Briefly describe the algorithms used for generating the ASCII art. This is crucial! E.g., "The project utilizes a density-based character mapping algorithm to convert grayscale images to ASCII representations." or "Geometric patterns are generated using recursive algorithms and trigonometric functions.")*
+* **Core Algorithms:** The project utilizes a density-based character mapping algorithm to convert grayscale images to ASCII representations.
 
 ## How to Run 🏃‍♂️
 
