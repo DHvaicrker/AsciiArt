@@ -4,7 +4,7 @@
 
 ## Overview 🚀
 
-This project showcases my is a versatile ASCII art generator. ASCII art, a classic form of digital art, uses printable characters from the ASCII standard to construct visual representations. This project goes beyond simply displaying pre-made art; it demonstrates the ability to programmatically generate and manipulate these text-based images.
+This project is a versatile ASCII art generator. ASCII art, a classic form of digital art, uses printable characters from the ASCII standard to construct visual representations. This project goes beyond simply displaying pre-made art; it demonstrates the ability to programmatically generate and manipulate these text-based images.
 ## Key Features & Capabilities ✨
 
 * **Diverse ASCII Art Generation:** Converts images into ASCII art by analyzing image brightness and mapping it to characters.
