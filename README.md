@@ -40,7 +40,7 @@ Converts characters to a binary "image" (2D array of booleans) to calculate thei
 
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/DHvaicrker/project-3.git
+   git clone https://github.com/DHvaicrker/AsciiArt.git
    cd project-3
    ```
 
@@ -65,4 +65,4 @@ This project demonstrates my ability to create a complex, interactive applicatio
 
 1. **Clone the Repository:**
    ```bash
-   git clone [https://github.com/DHvaicrker/project-3.git](https://github.com/DHvaicrker/project-3.git)
+   git clone [https://github.com/DHvaicrker/project-3.git](https://github.com/DHvaicrker/AsciiArt.git)
