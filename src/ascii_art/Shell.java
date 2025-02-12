@@ -19,7 +19,6 @@ public class Shell {
     private static final int ARG1_IDX = 1;
     private static final String COMMAND_PREFIX = ">>> ";
     private static final String SPACE_REGEX = "\\s+";
-
     private static final String EXIT_PROGRAM_COMMAND = "exit";
     private static final String SHOW_CHARS_COMMAND = "chars";
     private static final String ADD_CHAR_COMMAND = "add";
