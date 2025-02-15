@@ -61,8 +61,3 @@ This project demonstrates my ability to create a complex, interactive applicatio
 * **Language:** Java ☕
 * **Core Algorithms:** The project utilizes a density-based character mapping algorithm to convert grayscale images to ASCII representations.
 
-## How to Run 🏃‍♂️
-
-1. **Clone the Repository:**
-   ```bash
-   git clone [https://github.com/DHvaicrker/project-3.git](https://github.com/DHvaicrker/AsciiArt.git)
